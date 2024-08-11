@@ -1,39 +1,81 @@
-let leftOperand, rightOperand, operator;
+let calculator = {
+    leftOperand: "",
+    rightOperand: "",
+    operator: "",
 
-function operate(leftOperand, rightOperand, operator)
-{
-    switch (operator)
-    {
-        case '+':
-            return add(leftOperand, rightOperand);
+    operate: function() {
+        switch (this.operator) {
+            case '+':
+                return this.add();
+    
+            case '-':
+                return this.subtract();
+    
+            case '*':
+                return this.multiply();
+            
+            case '/':
+                return this.divide();
+        }
+    },
 
-        case '-':
-            return subtract(leftOperand, rightOperand);
+    add: function() {
+        return +this.leftOperand + +this.rightOperand;
+    },
 
-        case '*':
-            return multiply(leftOperand, rightOperand);
-        
-        case '/':
-            return divide(leftOperand, rightOperand);
+    subtract: function() {
+        return this.leftOperand - this.rightOperand;
+    },
+
+    multiply: function() {
+        return this.leftOperand * this.rightOperand;
+    },
+
+    divide: function() {
+        return this.leftOperand / this.rightOperand;
+    },
+}
+
+const operands = document.querySelectorAll(".operand");
+const operators = document.querySelectorAll(".operator");
+const clear = document.querySelector("#clear");
+const equal = document.querySelector("#equal");
+const display = document.querySelector(".display");
+
+operands.forEach((operand) => operand.addEventListener("click", () => {
+    if (calculator.operator === "") {
+        calculator.leftOperand += operand.id;
+        display.textContent = calculator.leftOperand;
     }
-}
+    else {
+        calculator.rightOperand += operand.id;
+        display.textContent = calculator.rightOperand;
+    }
+}));
 
-function add(leftOperand, rightOperand)
-{
-    return leftOperand + rightOperand;
-}
+operators.forEach((operator) => operator.addEventListener("click", () => {
+    if (calculator.leftOperand !== "" && calculator.operator === "") {
+        calculator.operator = operator.id;
+        calculator.rightOperand = "";
+    }
+    else if (calculator.rightOperand !== "") {
+        calculator.leftOperand = calculator.operate();
+        display.textContent = calculator.leftOperand;
+        calculator.rightOperand = "";
+        calculator.operator = operator.id;
+    }
+}));
 
-function subtract(leftOperand, rightOperand)
-{
-    return leftOperand - rightOperand;
-}
+clear.addEventListener("click", () => {
+    calculator.leftOperand = "";
+    calculator.rightOperand = "";
+    calculator.operator = "";
+    display.textContent = "";
+});
 
-function multiply(leftOperand, rightOperand)
-{
-    return leftOperand * rightOperand;
-}
-
-function divide(leftOperand, rightOperand)
-{
-    return leftOperand / rightOperand;
-}
+equal.addEventListener("click", () => {
+    if (calculator.rightOperand !== "") {
+        calculator.leftOperand = calculator.operate();
+        display.textContent = calculator.leftOperand;
+    }
+});
